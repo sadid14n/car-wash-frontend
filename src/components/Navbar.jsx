@@ -150,11 +150,17 @@ const Navbar = () => {
             Home
           </Link>
 
-          {userAuth?.isLoggedIn && (
+          {userAuth?.admin ? (
+            <Link
+              to="/admin/dashboard"
+              className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 border-b-2 border-transparent hover:border-gray-300"
+            >
+              Admin Dashboard
+            </Link>
+          ) : (
             <Link
               to="/user/dashboard"
-              className="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-50"
-              onClick={() => setIsMenuOpen(false)}
+              className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 border-b-2 border-transparent hover:border-gray-300"
             >
               Dashboard
             </Link>
