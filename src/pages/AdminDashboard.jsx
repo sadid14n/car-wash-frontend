@@ -88,6 +88,7 @@ const AdminDashboard = () => {
     }
   };
 
+  // Update wash -> no longer needed
   const updateUserInfo = async (userId, field) => {
     try {
       const user = users.find((u) => u._id === userId);
@@ -467,12 +468,6 @@ const AdminDashboard = () => {
                           {user.account_info?.perks || 0}
                         </td>
                         <td className="py-2 px-4 border flex space-x-2">
-                          <button
-                            onClick={() => updateUserInfo(user._id, "wash")}
-                            className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded cursor-pointer"
-                          >
-                            Update Wash
-                          </button>
                           <button
                             onClick={() => viewUserDetails(user)}
                             className="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded cursor-pointer"
