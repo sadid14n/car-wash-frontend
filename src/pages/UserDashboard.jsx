@@ -14,7 +14,9 @@ import { Navigate, useNavigate } from "react-router-dom";
 const UserDashboard = () => {
   const { userAuth } = useContext(UserContext);
   const [userData, setUserData] = useState(null);
+  const [washHistory, setWashHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [historyLoading, setHistoryLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -38,6 +40,9 @@ const UserDashboard = () => {
 
       setUserData(response.data.user);
       setLoading(false);
+
+      // After getting user data, fetch wash history
+      fetchWashHistory(response.data.user._id);
     } catch (err) {
       setError("Failed to fetch user data");
       setLoading(false);
@@ -45,34 +50,49 @@ const UserDashboard = () => {
     }
   };
 
-  // Get perk image based on perks level
-  const getPerkImage = (perksLevel) => {
-    const images = {
-      1: img1,
-      2: img2,
-      3: img3,
-      4: img4,
-      5: img5,
-      6: img6,
-      7: img7,
-      0: "/images/perks/no-perks.png",
-    };
-
-    return images[perksLevel] || images[0];
+  const fetchWashHistory = async (userId) => {
+    try {
+      setHistoryLoading(true);
+      const response = await axios.get(
+        import.meta.env.VITE_SERVER_DOMAIN +
+          `/api/v1/wash-history/user/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userAuth?.token}`,
+          },
+        }
+      );
+      setWashHistory(response.data.washHistory);
+      setHistoryLoading(false);
+    } catch (err) {
+      console.error("Failed to fetch wash history:", err);
+      setHistoryLoading(false);
+    }
   };
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
-    );
-  if (error)
-    return (
-      <div className="flex justify-center items-center h-screen text-red-500">
-        {error}
-      </div>
-    );
+  const getPerkImage = (perkLevel) => {
+    switch (perkLevel) {
+      case 1:
+        return img1;
+      case 2:
+        return img2;
+      case 3:
+        return img3;
+      case 4:
+        return img4;
+      case 5:
+        return img5;
+      case 6:
+        return img6;
+      case 7:
+        return img7;
+      default:
+        return img1;
+    }
+  };
+
+  if (loading) return <div className="text-center p-5">Loading...</div>;
+  if (error) return <div className="text-center p-5 text-red-500">{error}</div>;
 
   return (
     <div className="container mx-auto p-6">
@@ -207,7 +227,7 @@ const UserDashboard = () => {
                 <p className="text-lg font-medium text-gray-800 mb-4">
                   Your Current Perk
                 </p>
-                <div className=" relative">
+                <div className="relative">
                   <img
                     src={getPerkImage(userData?.account_info?.perks || 0)}
                     alt={`Perk level ${userData?.account_info?.perks || 0}`}
@@ -216,13 +236,99 @@ const UserDashboard = () => {
                 </div>
                 <p className="mt-4 text-sm text-gray-500 text-center">
                   {userData?.account_info?.perks === 7
-                    ? "You've reached the maximum perks level! Enjoy your reward on your next visit."
-                    : `${
-                        6 - (userData?.account_info?.perks || 0)
-                      } more washes until your next reward!`}
+                    ? "You've availed your FREE WASH! Perks will reset on your next visit."
+                    : userData?.account_info?.perks === 6
+                    ? "Your next wash is FREE! Visit us to claim your reward."
+                    : `${6 - (userData?.account_info?.perks || 0)} more wash${
+                        6 - (userData?.account_info?.perks || 0) !== 1
+                          ? "es"
+                          : ""
+                      } until your free wash!`}
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Wash History Section */}
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              Your Wash History
+            </h2>
+
+            {historyLoading ? (
+              <div className="text-center py-8">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-2"></div>
+                <p className="text-gray-500">Loading wash history...</p>
+              </div>
+            ) : washHistory.length === 0 ? (
+              <div className="text-center py-8 bg-gray-50 rounded-lg">
+                <p className="text-gray-500">No wash history found.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto bg-gray-50 p-4 rounded-lg">
+                <table className="min-w-full bg-white border border-gray-200">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="py-2 px-3 border text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="py-2 px-3 border text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Vehicle
+                      </th>
+                      <th className="py-2 px-3 border text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Service
+                      </th>
+                      <th className="py-2 px-3 border text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Payment
+                      </th>
+                      <th className="py-2 px-3 border text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Amount
+                      </th>
+                      <th className="py-2 px-3 border text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {washHistory.map((wash) => (
+                      <tr key={wash._id} className="border-b hover:bg-gray-50">
+                        <td className="py-2 px-3 border">
+                          {new Date(wash.createdAt).toLocaleDateString()}{" "}
+                          {new Date(wash.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </td>
+                        <td className="py-2 px-3 border">
+                          <div className="font-medium">
+                            {wash.vehicleNumber}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {wash.vehicleType}
+                          </div>
+                        </td>
+                        <td className="py-2 px-3 border">{wash.serviceType}</td>
+                        <td className="py-2 px-3 border">
+                          {wash.paymentMethod}
+                        </td>
+                        <td className="py-2 px-3 border">₹{wash.amount}</td>
+                        <td className="py-2 px-3 border">
+                          {wash.isFreeWash ? (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                              Free Wash
+                            </span>
+                          ) : (
+                            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                              Paid
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </div>
