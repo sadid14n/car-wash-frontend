@@ -8,6 +8,8 @@ import ProtectedUserRoute from "./components/ProtectedUserRoute";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import Register from "./pages/Register";
+import Dashboard from "./pages/adminDashboard/Dashboard";
+import UserManagement from "./pages/adminDashboard/UserManagement";
 
 export const UserContext = createContext({});
 
@@ -66,6 +68,22 @@ const App = () => {
           element={
             <ProtectedAdminRoute>
               <AdminDashboard />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/dash"
+          element={
+            <ProtectedAdminRoute>
+              <Dashboard />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/user-management"
+          element={
+            <ProtectedAdminRoute>
+              <UserManagement />
             </ProtectedAdminRoute>
           }
         />
