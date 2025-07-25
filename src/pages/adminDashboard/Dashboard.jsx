@@ -8,7 +8,7 @@ import { getMonthName, getDayName } from "../../../data/calendar.js";
 
 const Dashboard = () => {
   const [monthlyTotalWash, setMonthlyTotalWash] = useState(0);
-  const [todaysCurrentWash, setTodaysCurrentTotalWash] = useState(0);
+  const [todaysCurrentWash, setTodaysCurrentWash] = useState(0);
   const [todaysCompletedWash, setTodaysCompletedWash] = useState(0);
   const [totalUsers, setTotalUsers] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -59,10 +59,54 @@ const Dashboard = () => {
     }
   };
 
+  // get todays current wash
+  const getTodaysCurrentWash = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        import.meta.env.VITE_SERVER_DOMAIN +
+          "/api/v1/wash-history/todays-current-wash",
+        {
+          headers: {
+            Authorization: `Bearer ${userAuth?.token}`,
+          },
+        }
+      );
+      setTodaysCurrentWash(response.data.totalWash);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
+  // todays completed wash
+  const getTodaysCompletedWash = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        import.meta.env.VITE_SERVER_DOMAIN +
+          "/api/v1/wash-history/todays-completed-wash",
+        {
+          headers: {
+            Authorization: `Bearer ${userAuth?.token}`,
+          },
+        }
+      );
+      setTodaysCompletedWash(response.data.totalWash);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (userAuth?.token) {
       getTotalUser();
       getMonthlyTotalWash();
+      getTodaysCurrentWash();
+      getTodaysCompletedWash();
     }
   }, [userAuth]);
 
@@ -119,26 +163,27 @@ const Dashboard = () => {
             </span>
           </div>
 
-          <p className="px-4 text-3xl">2</p>
+          <p className="px-4 text-3xl">{todaysCurrentWash}</p>
           <p className="px-4 pt-1">{currentDay}: Today</p>
         </div>
 
         {/* Completed Wash */}
         <div className="w-[200px] h-[150px] max-sm:w-[90%] bg-white text-black rounded-md">
           <div className="flex justify-between px-4 pt-4 pb-2">
-            <p className="text-lg">Total Washes</p>
+            <p className="text-lg">Completed Washes</p>
             <span className="p-1 bg-white rounded-full border-1 border-black">
               <MoveUpRight color="black" />
             </span>
           </div>
 
-          <p className="px-4 text-3xl">200</p>
-          <p className="px-4 pt-1">July: Last 30 days</p>
+          <p className="px-4 text-3xl">{todaysCompletedWash}</p>
+          <p className="px-4 pt-1">{currentDay}: Today</p>
         </div>
-
+        {/* This is for mobile booking */}
+        {/* 
         <div className="w-[200px] h-[150px] max-sm:w-[90%] bg-white text-black rounded-md">
           <div className="flex justify-between px-4 pt-4 pb-2">
-            <p className="text-lg">Total Washes</p>
+            <p className="text-lg">Booking</p>
             <span className="p-1 bg-white rounded-full border-1 border-black">
               <MoveUpRight color="black" />
             </span>
@@ -146,7 +191,7 @@ const Dashboard = () => {
 
           <p className="px-4 text-3xl">200</p>
           <p className="px-4 pt-1">July: Last 30 days</p>
-        </div>
+        </div> */}
 
         <div className="w-[200px] h-[150px] max-sm:w-[90%] bg-white text-black rounded-md">
           <div className="flex justify-between px-4 pt-4 pb-2">
