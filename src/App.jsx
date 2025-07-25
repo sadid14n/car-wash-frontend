@@ -10,6 +10,9 @@ import UnauthorizedPage from "./pages/UnauthorizedPage";
 import Register from "./pages/Register";
 import Dashboard from "./pages/adminDashboard/Dashboard";
 import UserManagement from "./pages/adminDashboard/UserManagement";
+import Task from "./pages/adminDashboard/Task";
+import Calender from "./pages/adminDashboard/Calender";
+import Analytics from "./pages/adminDashboard/Analytics";
 
 export const UserContext = createContext({});
 
@@ -76,6 +79,30 @@ const App = () => {
           element={
             <ProtectedAdminRoute>
               <Dashboard />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/tasks"
+          element={
+            <ProtectedAdminRoute>
+              <Task />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/calender"
+          element={
+            <ProtectedAdminRoute>
+              <Calender />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/analytics"
+          element={
+            <ProtectedAdminRoute>
+              <Analytics />
             </ProtectedAdminRoute>
           }
         />
