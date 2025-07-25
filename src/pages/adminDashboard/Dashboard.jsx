@@ -1,9 +1,71 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AdminMenu from "../../components/admin/AdminMenu";
 import AdminDashboardLayout from "./AdminDashboardLayout";
 import { Search, Command, MoveUpRight } from "lucide-react";
+import axios from "axios";
+import { UserContext } from "../../App";
+import { getMonthName, getDayName } from "../../../data/calendar.js";
 
 const Dashboard = () => {
+  const [monthlyTotalWash, setMonthlyTotalWash] = useState(0);
+  const [todaysCurrentWash, setTodaysCurrentTotalWash] = useState(0);
+  const [todaysCompletedWash, setTodaysCompletedWash] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const currentDay = getDayName(new Date().getDay());
+  const currentMonth = getMonthName(new Date().getMonth());
+
+  const { userAuth } = useContext(UserContext);
+
+  // Get total user count
+  const getTotalUser = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        import.meta.env.VITE_SERVER_DOMAIN + "/api/v1/user/total-user-count",
+        {
+          headers: {
+            Authorization: `Bearer ${userAuth?.token}`,
+          },
+        }
+      );
+      setTotalUsers(response.data.totalUser);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
+  // get monthly total wash count
+  const getMonthlyTotalWash = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        import.meta.env.VITE_SERVER_DOMAIN +
+          "/api/v1/wash-history/monthly-total-wash",
+        {
+          headers: {
+            Authorization: `Bearer ${userAuth?.token}`,
+          },
+        }
+      );
+      setMonthlyTotalWash(response.data.totalWash);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (userAuth?.token) {
+      getTotalUser();
+      getMonthlyTotalWash();
+    }
+  }, [userAuth]);
+
   return (
     <AdminDashboardLayout>
       {/* Search Bar */}
@@ -44,8 +106,8 @@ const Dashboard = () => {
             </span>
           </div>
 
-          <p className="px-4 text-3xl">200</p>
-          <p className="px-4 pt-1">July: Last 30 days</p>
+          <p className="px-4 text-3xl">{monthlyTotalWash}</p>
+          <p className="px-4 pt-1">{currentMonth}: Last 30 days</p>
         </div>
 
         {/* Current wash */}
@@ -58,11 +120,11 @@ const Dashboard = () => {
           </div>
 
           <p className="px-4 text-3xl">2</p>
-          <p className="px-4 pt-1">Wednesday: Today</p>
+          <p className="px-4 pt-1">{currentDay}: Today</p>
         </div>
 
         {/* Completed Wash */}
-        <div className="w-[200px] h-[150px] max-sm:w-[90%] bg-green-700 text-white rounded-md">
+        <div className="w-[200px] h-[150px] max-sm:w-[90%] bg-white text-black rounded-md">
           <div className="flex justify-between px-4 pt-4 pb-2">
             <p className="text-lg">Total Washes</p>
             <span className="p-1 bg-white rounded-full border-1 border-black">
@@ -74,7 +136,7 @@ const Dashboard = () => {
           <p className="px-4 pt-1">July: Last 30 days</p>
         </div>
 
-        <div className="w-[200px] h-[150px] max-sm:w-[90%] bg-green-700 text-white rounded-md">
+        <div className="w-[200px] h-[150px] max-sm:w-[90%] bg-white text-black rounded-md">
           <div className="flex justify-between px-4 pt-4 pb-2">
             <p className="text-lg">Total Washes</p>
             <span className="p-1 bg-white rounded-full border-1 border-black">
@@ -86,16 +148,16 @@ const Dashboard = () => {
           <p className="px-4 pt-1">July: Last 30 days</p>
         </div>
 
-        <div className="w-[200px] h-[150px] max-sm:w-[90%] bg-green-700 text-white rounded-md">
+        <div className="w-[200px] h-[150px] max-sm:w-[90%] bg-white text-black rounded-md">
           <div className="flex justify-between px-4 pt-4 pb-2">
-            <p className="text-lg">Total Washes</p>
+            <p className="text-lg">Total Users</p>
             <span className="p-1 bg-white rounded-full border-1 border-black">
               <MoveUpRight color="black" />
             </span>
           </div>
 
-          <p className="px-4 text-3xl">200</p>
-          <p className="px-4 pt-1">July: Last 30 days</p>
+          <p className="px-4 text-3xl">{totalUsers}</p>
+          <p className="px-4 pt-1">Till {currentMonth}</p>
         </div>
       </div>
     </AdminDashboardLayout>
