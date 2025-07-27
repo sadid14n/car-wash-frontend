@@ -12,6 +12,7 @@ import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
 import { UserContext } from "../../App";
 import CreateWashModal from "../../components/CreateWashModal";
+import AddVehiclePopUp from "../../components/AddVehiclePopUp";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -27,6 +28,9 @@ const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [userWashHistory, setUserWashHistory] = useState([]);
+
+  const [isAddVehiclePopupOpen, setIsAddVehiclePopupOpen] = useState(false);
+  const [isEditVehiclePopupOpen, setIsEditVehiclePopupOpen] = useState(false);
 
   const { userAuth } = useContext(UserContext);
 
@@ -73,6 +77,8 @@ const UserManagement = () => {
       console.error(err);
     }
   };
+
+  // fetch
 
   // Add effect for filtering users based on search term
   useEffect(() => {
@@ -185,6 +191,145 @@ const UserManagement = () => {
     setIsCreateWashModalOpen(true);
   };
 
+  // Add vehical logics
+  const openAddVehiclePopup = () => {
+    setIsAddVehiclePopupOpen(true);
+  };
+
+  // edit vehicle popup
+  const openEditVehiclePopup = () => {
+    setIsEditVehiclePopupOpen(true);
+  };
+
+  const handleVehicleSubmit = (action, userId, ...args) => {
+    if (action === "add") {
+      const newVehicle = args[0];
+      submitVehicleToServer("add", userId, newVehicle);
+    } else if (action === "edit") {
+      const index = args[0];
+      const updatedVehicle = args[1];
+      submitVehicleToServer("edit", userId, index, updatedVehicle);
+    }
+  };
+
+  const submitVehicleToServer = async (action, userId, ...args) => {
+    try {
+      if (action === "add") {
+        const newVehicle = args[0];
+
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_SERVER_DOMAIN}/api/v1/user/add-vehicle`,
+          {
+            id: userId,
+            vehicle: newVehicle,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${userAuth?.token}`,
+            },
+          }
+        );
+
+        if (data.success) {
+          toast.success("Vehicle added successfully");
+        } else {
+          toast.error(data.message || "Failed to add vehicle");
+        }
+      }
+
+      if (action === "edit") {
+        const index = args[0];
+        const updatedVehicle = args[1];
+
+        const { data } = await axios.put(
+          `${import.meta.env.VITE_SERVER_DOMAIN}/api/v1/user/edit-vehicle`,
+          {
+            userId,
+            index,
+            updatedVehicle,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${userAuth?.token}`,
+            },
+          }
+        );
+
+        if (data.success) {
+          toast.success("Vehicle updated successfully");
+        } else {
+          toast.error(data.message || "Failed to update vehicle");
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong while submitting vehicle info");
+    }
+  };
+
+  // const editVehicle = async (action, userId, ...args) => {
+  //   try {
+  //     if (action === "add") {
+  //       const newVehicle = args[0];
+
+  //       // API call to add vehicle
+  //       const { data } = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/api/v1/user/add-vehicle`, {
+  //         id: userId,
+  //         vehicle: newVehicle,
+  //       });
+
+  //       if (data.success) {
+  //         toast.success("Vehicle added successfully");
+  //         // Optionally update local state or refetch user
+  //       }
+
+  //     } else if (action === "edit") {
+  //       const index = args[0];
+  //       const updatedVehicle = args[1];
+
+  //       // API call to edit vehicle
+  //       const { data } = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/api/v1/user/edit-vehicle`, {
+  //         userId,
+  //         index,
+  //         updatedVehicle,
+  //       });
+
+  //       if (data.success) {
+  //         toast.success("Vehicle updated successfully");
+  //         // Optionally update local state or refetch user
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Something went wrong while submitting vehicle info");
+  //   }
+  // };
+
+  // Add vehical
+  // const addVehicle = async (id, newVehicle) => {
+  //   try {
+  //     const { data } = await axios.post(
+  //       import.meta.env.VITE_SERVER_DOMAIN + "/api/v1/user/add-vehicle",
+  //       {
+  //         id,
+  //         vehicle: newVehicle,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${userAuth?.token}`,
+  //         },
+  //       }
+  //     );
+  //     if (data.success) {
+  //       console.log("Vehical added");
+  //     } else {
+  //       console.log("Failed ", data.message);
+  //     }
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // };
+
   return (
     <AdminDashboardLayout>
       <Toaster />
@@ -209,7 +354,7 @@ const UserManagement = () => {
           )}
         </div>
 
-        <p className="text-gray-400">Total User: 500</p>
+        <p className="text-gray-400">Total User: </p>
       </div>
       {searchTerm && (
         <div className="mt-2 text-sm text-gray-500">
@@ -294,11 +439,13 @@ const UserManagement = () => {
                 {/* name and button */}
                 <div className="">
                   <p className="">Name</p>
-                  <p className="font-semibold">Sadid</p>
+                  <p className="font-semibold">{selectedUser.name}</p>
                 </div>
                 {/* edit button */}
                 <div className="flex items-center text-white font-normal text-[11px]">
-                  <p className="bg-orange-400 px-2 rounded-l-md">Edit</p>
+                  <button className="bg-orange-400 px-2 rounded-l-md">
+                    Edit
+                  </button>
                   <PencilLine className="w-4 h-4 bg-orange-400 pr-2 rounded-r-md" />
                 </div>
               </div>
@@ -306,19 +453,21 @@ const UserManagement = () => {
               {/* Phone number */}
               <div className="text-sm mt-4">
                 <p>Phone Number</p>
-                <p className="font-semibold">7000347812</p>
+                <p className="font-semibold">{selectedUser.phone}</p>
               </div>
 
               {/* Member since */}
               <div className="text-sm mt-4">
                 <p>Member Since</p>
-                <p className="font-semibold">6/12/2025</p>
+                <p className="font-semibold">
+                  {new Date(selectedUser.joinedAt).toLocaleDateString()}
+                </p>
               </div>
 
               {/* Address */}
               <div className="text-sm mt-4">
                 <p>Address</p>
-                <p className="font-semibold">Rangia,Assam</p>
+                <p className="font-semibold">{selectedUser.address}</p>
               </div>
             </div>
 
@@ -330,14 +479,19 @@ const UserManagement = () => {
               {/* Total Wash */}
               <div className="text-sm mt-4">
                 <p>Total Wash</p>
-                <p className="font-bold">2</p>
+                <p className="font-bold">
+                  {selectedUser.account_info.total_wash}
+                </p>
               </div>
 
               {/* Current Perks */}
               <div className="text-sm mt-4">
                 <p>Current Perks</p>
                 <p>
-                  <span className="font-bold">2</span>/7
+                  <span className="font-bold">
+                    {selectedUser.account_info.perks}
+                  </span>
+                  /7
                 </p>
               </div>
 
@@ -352,7 +506,12 @@ const UserManagement = () => {
               {/* Edit button */}
               <div className="flex justify-end">
                 <div className="flex items-center text-white font-normal text-[11px]">
-                  <p className="bg-orange-400 px-2 rounded-l-md">Edit</p>
+                  <button
+                    className="bg-orange-400 px-2 rounded-l-md"
+                    onClick={openEditVehiclePopup}
+                  >
+                    Edit
+                  </button>
                   <PencilLine className="w-4 h-4 bg-orange-400 pr-2 rounded-r-md" />
                 </div>
               </div>
@@ -360,51 +519,35 @@ const UserManagement = () => {
               {/* Vehical column */}
               <div className="flex gap-5 overflow-x-auto font-semibold text-sm">
                 {/* vehical 1 */}
-                <div>
-                  {/* vehical num */}
-                  <div>
-                    <p>Vehical 1</p>
-                    <p>Car</p>
-                  </div>
+                {selectedUser.vehicle.map((vehical) => (
+                  <div key={vehical._id}>
+                    {/* vehical num */}
+                    <div>
+                      <p>Vehical 1</p>
+                      <p>{vehical.vehicle_type}</p>
+                    </div>
 
-                  {/* vehical name */}
-                  <div className="mt-4">
-                    <p>Vehical Name</p>
-                    <p>Celerio</p>
-                  </div>
+                    {/* vehical name */}
+                    <div className="mt-4">
+                      <p>Vehical Name</p>
+                      <p>{vehical.vehicle_name}</p>
+                    </div>
 
-                  {/* Vehical number */}
-                  <div className="mt-4">
-                    <p>Number</p>
-                    <p>AS11034</p>
+                    {/* Vehical number */}
+                    <div className="mt-4">
+                      <p>Number</p>
+                      <p>{vehical.vehicle_number}</p>
+                    </div>
                   </div>
-                </div>
-
-                {/* Vehical 2 */}
-                <div>
-                  {/* vehical num */}
-                  <div>
-                    <p>Vehical 2</p>
-                    <p>Car</p>
-                  </div>
-
-                  {/* vehical name */}
-                  <div className="mt-4">
-                    <p>Vehical Name</p>
-                    <p>Celerio</p>
-                  </div>
-
-                  {/* Vehical number */}
-                  <div className="mt-4">
-                    <p>Number</p>
-                    <p>AS11034</p>
-                  </div>
-                </div>
+                ))}
               </div>
 
               {/* Add vehical button */}
               <div className="flex justify-end mt-6">
-                <button className="text-[11px] bg-green-700 text-white py-1 px-2 rounded-md cursor-pointer">
+                <button
+                  className="text-[11px] bg-green-700 text-white py-1 px-2 rounded-md cursor-pointer"
+                  onClick={openAddVehiclePopup}
+                >
                   Add Vehicle
                 </button>
               </div>
@@ -522,6 +665,26 @@ const UserManagement = () => {
           user={selectedUser}
           onClose={() => setIsCreateWashModalOpen(false)}
           onSubmit={createWash}
+        />
+      )}
+
+      {/* Add Vehicle */}
+      {isAddVehiclePopupOpen && selectedUser && (
+        <AddVehiclePopUp
+          onClose={() => setIsAddVehiclePopupOpen(false)}
+          onSubmit={handleVehicleSubmit}
+          user={selectedUser}
+          mode="add"
+        />
+      )}
+
+      {/* Edit Vehicle */}
+      {isEditVehiclePopupOpen && selectedUser && (
+        <AddVehiclePopUp
+          onClose={() => setIsEditVehiclePopupOpen(false)}
+          onSubmit={handleVehicleSubmit}
+          user={selectedUser}
+          mode="edit"
         />
       )}
     </AdminDashboardLayout>
