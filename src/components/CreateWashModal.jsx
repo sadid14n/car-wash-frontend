@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
 const CreateWashModal = ({ user, onClose, onSubmit }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
   const [formData, setFormData] = useState({
     vehicleNumber: "",
     vehicleType: "Car",
@@ -9,10 +13,6 @@ const CreateWashModal = ({ user, onClose, onSubmit }) => {
     amount: 200,
     notes: "",
   });
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,7 +30,7 @@ const CreateWashModal = ({ user, onClose, onSubmit }) => {
       return;
     }
 
-    if (!formData.amount || formData.amount <= 0) {
+    if (!formData.amount || formData.amount < 0) {
       setError("Valid amount is required");
       return;
     }
