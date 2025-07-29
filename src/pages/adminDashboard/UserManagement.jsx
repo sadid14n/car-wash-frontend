@@ -13,6 +13,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { UserContext } from "../../App";
 import CreateWashModal from "../../components/CreateWashModal";
 import AddVehiclePopUp from "../../components/AddVehiclePopUp";
+import EditUserPopup from "../../components/EditUserPopup";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -28,6 +29,8 @@ const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [userWashHistory, setUserWashHistory] = useState([]);
+
+  const [isEditUserOpen, setIsEditUserOpen] = useState(false);
 
   const [isAddVehiclePopupOpen, setIsAddVehiclePopupOpen] = useState(false);
   const [isEditVehiclePopupOpen, setIsEditVehiclePopupOpen] = useState(false);
@@ -330,6 +333,39 @@ const UserManagement = () => {
   //   }
   // };
 
+  // Edit User Info
+
+  const handleOpenEditUser = (user) => {
+    setSelectedUser(user);
+    setIsEditUserOpen(true);
+  };
+
+  const handleUpdateUser = async (userId, updatedData) => {
+    try {
+      const { data } = await axios.put(
+        `${import.meta.env.VITE_SERVER_DOMAIN}/api/v1/user/update-profile`,
+        {
+          userId,
+          ...updatedData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userAuth?.token}`,
+          },
+        }
+      );
+
+      if (data.success) {
+        toast.success("User updated successfully");
+        // Refetch user list if needed
+      } else {
+        toast.error(data.message || "Failed to update user");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error updating user");
+    }
+  };
   return (
     <AdminDashboardLayout>
       <Toaster />
@@ -443,7 +479,10 @@ const UserManagement = () => {
                 </div>
                 {/* edit button */}
                 <div className="flex items-center text-white font-normal text-[11px]">
-                  <button className="bg-orange-400 px-2 rounded-l-md">
+                  <button
+                    className="bg-orange-400 px-2 rounded-l-md"
+                    onClick={() => handleOpenEditUser(selectedUser)}
+                  >
                     Edit
                   </button>
                   <PencilLine className="w-4 h-4 bg-orange-400 pr-2 rounded-r-md" />
@@ -685,6 +724,15 @@ const UserManagement = () => {
           onSubmit={handleVehicleSubmit}
           user={selectedUser}
           mode="edit"
+        />
+      )}
+
+      {/* Edit User */}
+      {isEditUserOpen && selectedUser && (
+        <EditUserPopup
+          onClose={() => setIsEditUserOpen(false)}
+          onSubmit={handleUpdateUser}
+          user={selectedUser}
         />
       )}
     </AdminDashboardLayout>
