@@ -19,7 +19,7 @@ import UserImage from "../../assets/user.jpg";
 const MenuItem = [
   {
     name: "Dashboard",
-    path: "/admin/dash",
+    path: "/admin/dashboard",
     icon: <LayoutDashboard className="w-5 h-5" />,
   },
   {
