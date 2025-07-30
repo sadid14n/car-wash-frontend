@@ -175,7 +175,7 @@ const ViewWashDetailsModal = ({ wash, onClose }) => {
               </div>
             </div>
 
-            <div className="flex justify-end space-x-3">
+            {/* <div className="flex justify-end space-x-3">
               <button
                 type="button"
                 onClick={handleGoBack}
@@ -196,7 +196,7 @@ const ViewWashDetailsModal = ({ wash, onClose }) => {
               >
                 {loading ? "Creating..." : "Confirm & Create"}
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
