@@ -5,6 +5,7 @@ import axios from "axios";
 import { UserContext } from "../../App";
 import CreateWashModal from "../../components/CreateWashModal";
 import ViewWashDetailsModal from "../../components/ViewWashDetailsModal";
+import UpdateWashStatusModal from "../../components/UpdateWashStatusModal";
 
 const Task = () => {
   const [todaysCurrentWash, setTodaysCurrentWash] = useState(null);
@@ -14,7 +15,46 @@ const Task = () => {
   const [selectedWash, setSelectedWash] = useState(null);
   const [isWashDetailsModalOpen, setIsWashDetailsModalOpen] = useState(false);
 
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [selectedWashId, setSelectedWashId] = useState(null);
+
   const { userAuth } = useContext(UserContext);
+
+  const openStatusModal = (washId) => {
+    setSelectedWashId(washId);
+    setIsStatusModalOpen(true);
+  };
+
+  const closeStatusModal = () => {
+    setSelectedWashId(null);
+    setIsStatusModalOpen(false);
+  };
+
+  const handleStatusUpdate = async (washId) => {
+    try {
+      const { data } = await axios.put(
+        import.meta.env.VITE_SERVER_DOMAIN +
+          `/api/v1/wash-history/update-status/${washId}`,
+        { status: "Done" },
+        {
+          headers: {
+            Authorization: `Bearer ${userAuth?.token}`,
+          },
+        }
+      );
+
+      if (data.success) {
+        getTodaysCurrentWash(); // refresh current wash list
+        getTodaysCompletedWash(); // refresh completed list
+        closeStatusModal();
+      } else {
+        alert("Status update failed");
+      }
+    } catch (error) {
+      console.error("Status update error", error.message);
+      alert("Something went wrong");
+    }
+  };
 
   const getTodaysCurrentWash = async () => {
     try {
@@ -139,9 +179,17 @@ const Task = () => {
                   <td className="py-2 px-4 border">{wash.paymentMethod}</td>
                   <td className="py-2 px-4 border">{wash.amount}</td>
                   <td className="py-2 px-4 border">
-                    <button className="bg-yellow-300 text-white px-2">
-                      {wash.status}
-                    </button>
+                    <div className="flex gap-2">
+                      <button className="bg-yellow-300 text-white px-2 rounded text-sm">
+                        {wash.status}
+                      </button>
+                      <button
+                        onClick={() => openStatusModal(wash._id)}
+                        className="bg-blue-500 text-white px-2 rounded text-sm"
+                      >
+                        Update Status
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -229,6 +277,14 @@ const Task = () => {
       {/* View Wash Details Modal */}
       {isWashDetailsModalOpen && selectedWash && (
         <ViewWashDetailsModal wash={selectedWash} onClose={onClose} />
+      )}
+
+      {isStatusModalOpen && selectedWashId && (
+        <UpdateWashStatusModal
+          washId={selectedWashId}
+          onConfirm={handleStatusUpdate}
+          onCancel={closeStatusModal}
+        />
       )}
     </AdminDashboardLayout>
   );
