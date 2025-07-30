@@ -66,16 +66,16 @@ const App = () => {
           }
         />
 
-        <Route
+        {/* <Route
           path="/admin/dashboard"
           element={
             <ProtectedAdminRoute>
               <AdminDashboard />
             </ProtectedAdminRoute>
           }
-        />
+        /> */}
         <Route
-          path="/admin/dash"
+          path="/admin/dashboard"
           element={
             <ProtectedAdminRoute>
               <Dashboard />
