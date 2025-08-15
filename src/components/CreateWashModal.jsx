@@ -101,7 +101,7 @@ const CreateWashModal = ({ user, onClose, onSubmit }) => {
           <div className="mb-4">
             <p className="text-sm text-gray-500">Creating wash record for:</p>
             <p className="font-medium text-gray-800">
-              {user.name} ({user.email})
+              {user.name} ({user.phone})
             </p>
           </div>
 
