@@ -5,6 +5,7 @@ import axios from "axios";
 import { UserContext } from "../../App";
 import { getMonthName, getDayName } from "../../../data/calendar.js";
 import { Toaster, toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [monthlyTotalWash, setMonthlyTotalWash] = useState(0);
@@ -26,6 +27,8 @@ const Dashboard = () => {
   });
 
   const { userAuth } = useContext(UserContext);
+
+  const navigate = useNavigate();
 
   // Get total user count
   const getTotalUser = async () => {
@@ -159,6 +162,7 @@ const Dashboard = () => {
           password: "",
         });
         // Refresh user list
+        navigate("/admin/user-management");
       } else {
         toast.error(response.data.message || "Registration failed");
       }
