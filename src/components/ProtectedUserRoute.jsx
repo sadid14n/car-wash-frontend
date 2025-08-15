@@ -6,6 +6,7 @@ const ProtectedUserRoute = ({ children }) => {
   const { userAuth } = useContext(UserContext);
 
   if (!userAuth?.isLoggedIn) return <Navigate to="/login" />;
+  if (userAuth?.role !== "user") return <Navigate to="/unauthorized" />;
 
   return children;
 };

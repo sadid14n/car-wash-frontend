@@ -6,7 +6,7 @@ const ProtectedAdminRoute = ({ children }) => {
   const { userAuth } = useContext(UserContext);
 
   if (!userAuth?.isLoggedIn) return <Navigate to="/login" />;
-  if (!userAuth?.admin) return <Navigate to="/unauthorized" />;
+  if (userAuth?.role !== "admin") return <Navigate to="/unauthorized" />;
 
   return children;
 };

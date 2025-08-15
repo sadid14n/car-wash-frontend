@@ -13,6 +13,7 @@ import UserManagement from "./pages/adminDashboard/UserManagement";
 import Task from "./pages/adminDashboard/Task";
 import Calender from "./pages/adminDashboard/Calender";
 import Analytics from "./pages/adminDashboard/Analytics";
+import RedirectIfAuthenticated from "./components/redirectIfAuthenticated";
 
 export const UserContext = createContext({});
 
@@ -54,8 +55,26 @@ const App = () => {
             <h1 className="text-center text-2xl">Welcome to Car Wash</h1>
           }
         />
-        <Route path="/login" element={<UserAuth />} />
-        <Route path="/register" element={<Register />} />
+
+        {/* redirect if authenticated */}
+        <Route
+          path="/login"
+          element={
+            <RedirectIfAuthenticated>
+              <UserAuth />
+            </RedirectIfAuthenticated>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <RedirectIfAuthenticated>
+              <Register />
+            </RedirectIfAuthenticated>
+          }
+        />
+
+        {/* Protected User Route */}
 
         <Route
           path="/user/dashboard"
@@ -66,14 +85,6 @@ const App = () => {
           }
         />
 
-        {/* <Route
-          path="/admin/dashboard"
-          element={
-            <ProtectedAdminRoute>
-              <AdminDashboard />
-            </ProtectedAdminRoute>
-          }
-        /> */}
         <Route
           path="/admin/dashboard"
           element={
