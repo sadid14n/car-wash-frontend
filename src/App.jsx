@@ -13,7 +13,7 @@ import UserManagement from "./pages/adminDashboard/UserManagement";
 import Task from "./pages/adminDashboard/Task";
 import Calender from "./pages/adminDashboard/Calender";
 import Analytics from "./pages/adminDashboard/Analytics";
-import RedirectIfAuthenticated from "./components/redirectIfAuthenticated";
+import RedirectIfAuthenticated from "./components/RedirectIfAuthenticated";
 
 export const UserContext = createContext({});
 
