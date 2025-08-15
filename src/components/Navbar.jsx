@@ -8,7 +8,6 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    // Clear user data from context and session storage
     setUserAuth(null);
     localStorage.removeItem("user");
     navigate("/login");
