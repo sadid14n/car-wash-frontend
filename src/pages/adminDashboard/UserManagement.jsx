@@ -89,10 +89,8 @@ const UserManagement = () => {
       setFilteredUsers(users);
     } else {
       const lowercaseSearch = searchTerm.toLowerCase();
-      const filtered = users.filter(
-        (user) =>
-          user.name.toLowerCase().includes(lowercaseSearch) ||
-          user.email.toLowerCase().includes(lowercaseSearch)
+      const filtered = users.filter((user) =>
+        user.name.toLowerCase().includes(lowercaseSearch)
       );
       setFilteredUsers(filtered);
     }
@@ -407,7 +405,7 @@ const UserManagement = () => {
             <thead>
               <tr className="bg-gray-100">
                 <th className="py-2 px-4 border">Name</th>
-                <th className="py-2 px-4 border">Email</th>
+                <th className="py-2 px-4 border">Phone</th>
                 <th className="py-2 px-4 border">Total Wash</th>
                 <th className="py-2 px-4 border">Perks</th>
                 <th className="py-2 px-4 border">Actions</th>
@@ -419,7 +417,7 @@ const UserManagement = () => {
                 filteredUsers.map((user) => (
                   <tr key={user._id} className="border-b hover:bg-gray-50">
                     <td className="py-2 px-4 border">{user.name}</td>
-                    <td className="py-2 px-4 border">{user.email}</td>
+                    <td className="py-2 px-4 border">{user.phone}</td>
                     <td className="py-2 px-4 border">
                       {user.account_info?.total_wash || 0}
                     </td>
@@ -433,12 +431,12 @@ const UserManagement = () => {
                       >
                         View Details
                       </button>
-                      <button
+                      {/* <button
                         onClick={() => openCreateWashModal(user)}
                         className="bg-purple-500 hover:bg-purple-600 text-white py-1 px-3 rounded cursor-pointer"
                       >
                         Create Wash
-                      </button>
+                      </button> */}
                     </td>
                   </tr>
                 ))
@@ -602,7 +600,7 @@ const UserManagement = () => {
                 className="flex bg-purple-500 text-white p-1 rounded-md"
                 onClick={() => {
                   setIsCreateWashModalOpen(true);
-                  setIsUserModalOpen(false);
+                  // setIsUserModalOpen(false);
                 }}
               >
                 <Plus /> Create New Wash

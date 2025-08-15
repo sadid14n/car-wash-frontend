@@ -114,7 +114,21 @@ const CreateWashModal = ({ user, onClose, onSubmit }) => {
           {!showConfirmation ? (
             <form onSubmit={handleProceedToConfirmation}>
               <div className="mb-4">
-                <label
+                {/* <label htmlFor="vehicleNumber">Vehicle Number</label>
+                <select
+                  id="vehicleNumber"
+                  name="vehicleNumber"
+                  value={formData.vehicleNumber}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Vehicle</option>
+                  {user.vehicle.map((vehicle) => (
+                    <option key={vehicle._id} value={vehicle.number}>
+                      {vehicle.number}
+                    </option>
+                  ))}
+                </select> */}
+                {/* <label
                   className="block text-gray-700 mb-2"
                   htmlFor="vehicleNumber"
                 >
@@ -129,7 +143,37 @@ const CreateWashModal = ({ user, onClose, onSubmit }) => {
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                   placeholder="e.g., MH01AB1234"
-                />
+                /> */}
+              </div>
+
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 mb-2"
+                  htmlFor="vehicleNumber"
+                >
+                  Vehicle Number *
+                </label>
+                <select
+                  id="vehicleNumber"
+                  name="vehicleNumber"
+                  value={formData.vehicleNumber}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">Select Vehicle</option>
+                  {Array.isArray(user.vehicle) && user.vehicle.length > 0 ? (
+                    user.vehicle.map((vehicle) => (
+                      <option key={vehicle._id} value={vehicle.vehicle_number}>
+                        {vehicle.vehicle_number}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="" disabled>
+                      No vehicles found
+                    </option>
+                  )}
+                </select>
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-4">

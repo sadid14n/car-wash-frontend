@@ -66,20 +66,25 @@ const Register = () => {
       // Register the user
       const registerResponse = await axios.post(
         import.meta.env.VITE_SERVER_DOMAIN + "/api/v1/user/register",
-        {
-          headers: {
-            Authorization: `Bearer ${userAuth?.token}`,
-          },
-        },
+
         {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userAuth?.token}`,
+          },
         }
       );
 
       if (registerResponse.data.success) {
-        navigate("/admin/dashboard");
+        if (registerResponse.data.user.isAdmin) {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/user/dashboard");
+        }
       } else {
         setError(registerResponse.data.message || "Registration failed");
       }

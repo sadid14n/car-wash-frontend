@@ -21,7 +21,7 @@ const Dashboard = () => {
   // New state for user registration form
   const [newUserData, setNewUserData] = useState({
     name: "",
-    email: "",
+    phone: "",
     password: "",
   });
 
@@ -125,10 +125,12 @@ const Dashboard = () => {
     e.preventDefault();
 
     // Validate form
-    if (!newUserData.name || !newUserData.email || !newUserData.password) {
+    if (!newUserData.name || !newUserData.password || !newUserData.phone) {
       toast.error("All fields are required");
       return;
     }
+
+    console.log(newUserData);
 
     if (newUserData.password.length < 6) {
       toast.error("Password must be at least 6 characters");
@@ -153,7 +155,7 @@ const Dashboard = () => {
         // Reset form
         setNewUserData({
           name: "",
-          email: "",
+          phone: "",
           password: "",
         });
         // Refresh user list
@@ -239,15 +241,23 @@ const Dashboard = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-2" htmlFor="email">
-                  Email
+                <label className="block text-gray-700 mb-2" htmlFor="phone">
+                  Phone
                 </label>
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={newUserData.email}
-                  onChange={handleNewUserInputChange}
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  value={newUserData.phone}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, ""); // remove non-numeric
+                    if (value.length <= 10) {
+                      handleNewUserInputChange({
+                        target: { name: "phone", value },
+                      });
+                    }
+                  }}
+                  maxLength={10}
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
