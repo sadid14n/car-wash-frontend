@@ -70,6 +70,7 @@ const Task = () => {
       );
 
       if (data.success) {
+        console.log(data.todaysCurrentWash);
         setTodaysCurrentWash(data.todaysCurrentWash);
       } else {
         console.error("Failed ", data.message);
@@ -173,7 +174,7 @@ const Task = () => {
               todaysCurrentWash.map((wash) => (
                 <tr key={wash._id} className="border-b hover:bg-gray-50">
                   <td className="py-2 px-4 border">{wash.user.name}</td>
-                  <td className="py-2 px-4 border">{wash.user.email}</td>
+                  <td className="py-2 px-4 border">{wash.user.phone}</td>
                   <td className="py-2 px-4 border">{wash.vehicleNumber}</td>
                   <td className="py-2 px-4 border">{wash.serviceType}</td>
                   <td className="py-2 px-4 border">{wash.paymentMethod}</td>
@@ -242,7 +243,7 @@ const Task = () => {
                 return (
                   <tr key={wash._id} className="border-b hover:bg-gray-50">
                     <td className="py-2 px-4 border">{wash.user.name}</td>
-                    <td className="py-2 px-4 border">{wash.user.email}</td>
+                    <td className="py-2 px-4 border">{wash.user.phone}</td>
                     <td className="py-2 px-4 border">{wash.vehicleNumber}</td>
                     <td className="py-2 px-4 border">{wash.serviceType}</td>
                     <td className="py-2 px-4 border">{wash.paymentMethod}</td>
