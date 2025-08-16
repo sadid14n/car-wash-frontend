@@ -71,6 +71,7 @@ const Task = () => {
 
       if (data.success) {
         console.log(data.todaysCurrentWash);
+        console.log(data.todaysCurrentWash);
         setTodaysCurrentWash(data.todaysCurrentWash);
       } else {
         console.error("Failed ", data.message);
@@ -173,8 +174,12 @@ const Task = () => {
             {todaysCurrentWash?.length > 0 ? (
               todaysCurrentWash.map((wash) => (
                 <tr key={wash._id} className="border-b hover:bg-gray-50">
-                  <td className="py-2 px-4 border">{wash.user.name}</td>
-                  <td className="py-2 px-4 border">{wash.user.phone}</td>
+                  <td className="py-2 px-4 border">
+                    {wash.user ? wash.user.name : "Deleted User"}
+                  </td>
+                  <td className="py-2 px-4 border">
+                    {wash.user ? wash.user.phone : "-"}
+                  </td>
                   <td className="py-2 px-4 border">{wash.vehicleNumber}</td>
                   <td className="py-2 px-4 border">{wash.serviceType}</td>
                   <td className="py-2 px-4 border">{wash.paymentMethod}</td>
@@ -242,8 +247,12 @@ const Task = () => {
                 // console.log(wash);
                 return (
                   <tr key={wash._id} className="border-b hover:bg-gray-50">
-                    <td className="py-2 px-4 border">{wash.user.name}</td>
-                    <td className="py-2 px-4 border">{wash.user.phone}</td>
+                    <td className="py-2 px-4 border">
+                      {wash.user ? wash.user.name : "Deleted User"}
+                    </td>
+                    <td className="py-2 px-4 border">
+                      {wash.user ? wash.user.phone : "-"}
+                    </td>
                     <td className="py-2 px-4 border">{wash.vehicleNumber}</td>
                     <td className="py-2 px-4 border">{wash.serviceType}</td>
                     <td className="py-2 px-4 border">{wash.paymentMethod}</td>
