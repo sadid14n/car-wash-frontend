@@ -14,7 +14,6 @@ import { UserContext } from "../../App";
 import CreateWashModal from "../../components/CreateWashModal";
 import AddVehiclePopUp from "../../components/AddVehiclePopUp";
 import EditUserPopup from "../../components/EditUserPopup";
-import { set } from "mongoose";
 import DeleteUserModalConfirm from "../../components/DeleteUserModalConfirm";
 
 const UserManagement = () => {
