@@ -52,6 +52,23 @@ const AddVehiclePopUp = ({ onClose, onSubmit, user, mode = "add" }) => {
     onClose();
   };
 
+  const handleDelete = (vehicleId) => {
+    if (mode === "edit") {
+      onSubmit("delete", user._id, vehicleId);
+      resetForm();
+      onClose();
+    }
+  };
+
+  const resetForm = () => {
+    setNewVehicle({
+      vehicle_type: "",
+      vehicle_name: "",
+      vehicle_number: "",
+    });
+    setSelectedVehicleIndex(null);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
@@ -87,6 +104,13 @@ const AddVehiclePopUp = ({ onClose, onSubmit, user, mode = "add" }) => {
                     onClick={() => handleEditVehicleClick(vehicle, idx)}
                   >
                     Edit
+                  </button>
+
+                  <button
+                    className="px-3 py-1 text-sm rounded-md bg-red-500 text-white hover:bg-red-600"
+                    onClick={() => handleDelete(vehicle._id)} // ✅ pass _id here
+                  >
+                    Delete
                   </button>
                 </div>
               ))}
@@ -138,22 +162,24 @@ const AddVehiclePopUp = ({ onClose, onSubmit, user, mode = "add" }) => {
               />
             </div>
 
-            <div className="flex justify-end gap-2 mt-6">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
-              >
-                {mode === "edit" && selectedVehicleIndex !== null
-                  ? "Update Vehicle"
-                  : "Add Vehicle"}
-              </button>
+            <div className="flex justify-between mt-6">
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  {mode === "edit" && selectedVehicleIndex !== null
+                    ? "Update Vehicle"
+                    : "Add Vehicle"}
+                </button>
+              </div>
             </div>
           </form>
         )}

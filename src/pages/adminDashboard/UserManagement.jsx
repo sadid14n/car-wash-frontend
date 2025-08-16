@@ -243,6 +243,9 @@ const UserManagement = () => {
       const index = args[0];
       const updatedVehicle = args[1];
       submitVehicleToServer("edit", userId, index, updatedVehicle);
+    } else if (action === "delete") {
+      const index = args[0];
+      submitVehicleToServer("delete", userId, index);
     }
   };
 
@@ -295,6 +298,26 @@ const UserManagement = () => {
           await refetchUserDetails(userId);
         } else {
           toast.error(data.message || "Failed to update vehicle");
+        }
+      }
+
+      if (action === "delete") {
+        const vehicleId = args[0];
+
+        const { data } = await axios.delete(
+          `${
+            import.meta.env.VITE_SERVER_DOMAIN
+          }/api/v1/user/users/${userId}/vehicles/${vehicleId}`,
+          {
+            headers: { Authorization: `Bearer ${userAuth?.token}` },
+          }
+        );
+
+        if (data.success) {
+          toast.success("Vehicle deleted successfully");
+          await refetchUserDetails(userId);
+        } else {
+          toast.error(data.message || "Failed to delete vehicle");
         }
       }
     } catch (error) {
