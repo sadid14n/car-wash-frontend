@@ -14,6 +14,7 @@ import { UserContext } from "../../App";
 import CreateWashModal from "../../components/CreateWashModal";
 import AddVehiclePopUp from "../../components/AddVehiclePopUp";
 import EditUserPopup from "../../components/EditUserPopup";
+import { set } from "mongoose";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -202,6 +203,35 @@ const UserManagement = () => {
     setIsEditVehiclePopupOpen(true);
   };
 
+  const refetchUserDetails = async (userId) => {
+    try {
+      const response = await axios.get(
+        `${
+          import.meta.env.VITE_SERVER_DOMAIN
+        }/api/v1/user/get-single-user/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userAuth?.token}`,
+          },
+        }
+      );
+
+      if (response.data?.user) {
+        // Update users list
+        setUsers((prevUsers) =>
+          prevUsers.map((u) => (u._id === userId ? response.data.user : u))
+        );
+
+        // Update selected user if same one
+        if (selectedUser?._id === userId) {
+          setSelectedUser(response.data.user);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to refetch user details:", err);
+    }
+  };
+
   const handleVehicleSubmit = (action, userId, ...args) => {
     if (action === "add") {
       const newVehicle = args[0];
@@ -233,6 +263,7 @@ const UserManagement = () => {
 
         if (data.success) {
           toast.success("Vehicle added successfully");
+          await refetchUserDetails(userId);
         } else {
           toast.error(data.message || "Failed to add vehicle");
         }
@@ -258,6 +289,7 @@ const UserManagement = () => {
 
         if (data.success) {
           toast.success("Vehicle updated successfully");
+          await refetchUserDetails(userId);
         } else {
           toast.error(data.message || "Failed to update vehicle");
         }
@@ -355,6 +387,7 @@ const UserManagement = () => {
 
       if (data.success) {
         toast.success("User updated successfully");
+        await refetchUserDetails(userId);
         // Refetch user list if needed
       } else {
         toast.error(data.message || "Failed to update user");
@@ -362,6 +395,28 @@ const UserManagement = () => {
     } catch (error) {
       console.error(error);
       toast.error("Error updating user");
+    }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    try {
+      await axios.delete(
+        `${
+          import.meta.env.VITE_SERVER_DOMAIN
+        }/api/v1/user/delete-user/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userAuth?.token}`,
+          },
+        }
+      );
+      toast.success("User deleted successfully");
+      fetchUsers();
+      setIsUserModalOpen(false);
+      setSelectedUser(null);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to delete user");
     }
   };
   return (
@@ -506,6 +561,15 @@ const UserManagement = () => {
                 <p>Address</p>
                 <p className="font-semibold">{selectedUser.address}</p>
               </div>
+
+              <div className="mt-4">
+                <button
+                  className="text-sm border-2 px-3 py-1 rounded-lg bg-red-500 text-white cursor-pointer"
+                  onClick={() => handleDeleteUser(selectedUser._id)}
+                >
+                  Delete User
+                </button>
+              </div>
             </div>
 
             {/* second card */}
@@ -554,26 +618,26 @@ const UserManagement = () => {
               </div>
 
               {/* Vehical column */}
-              <div className="flex gap-5 overflow-x-auto font-semibold text-sm">
+              <div className="flex gap-5 overflow-x-auto  text-sm">
                 {/* vehical 1 */}
-                {selectedUser.vehicle.map((vehical) => (
+                {selectedUser.vehicle.map((vehical, i) => (
                   <div key={vehical._id}>
                     {/* vehical num */}
                     <div>
-                      <p>Vehical 1</p>
-                      <p>{vehical.vehicle_type}</p>
+                      <p className="font-medium">Vehical {i + 1}</p>
+                      <p className="font-bold">{vehical.vehicle_type}</p>
                     </div>
 
                     {/* vehical name */}
                     <div className="mt-4">
-                      <p>Vehical Name</p>
-                      <p>{vehical.vehicle_name}</p>
+                      <p className="font-medium">Vehical Name</p>
+                      <p className="font-bold">{vehical.vehicle_name}</p>
                     </div>
 
                     {/* Vehical number */}
                     <div className="mt-4">
-                      <p>Number</p>
-                      <p>{vehical.vehicle_number}</p>
+                      <p className="font-medium">Number</p>
+                      <p className="font-bold">{vehical.vehicle_number}</p>
                     </div>
                   </div>
                 ))}
