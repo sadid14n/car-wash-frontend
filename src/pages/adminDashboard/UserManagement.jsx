@@ -15,6 +15,7 @@ import CreateWashModal from "../../components/CreateWashModal";
 import AddVehiclePopUp from "../../components/AddVehiclePopUp";
 import EditUserPopup from "../../components/EditUserPopup";
 import { set } from "mongoose";
+import DeleteUserModalConfirm from "../../components/DeleteUserModalConfirm";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -35,6 +36,8 @@ const UserManagement = () => {
 
   const [isAddVehiclePopupOpen, setIsAddVehiclePopupOpen] = useState(false);
   const [isEditVehiclePopupOpen, setIsEditVehiclePopupOpen] = useState(false);
+
+  const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState(false);
 
   const { userAuth } = useContext(UserContext);
 
@@ -565,7 +568,9 @@ const UserManagement = () => {
               <div className="mt-4">
                 <button
                   className="text-sm border-2 px-3 py-1 rounded-lg bg-red-500 text-white cursor-pointer"
-                  onClick={() => handleDeleteUser(selectedUser._id)}
+                  onClick={() => {
+                    setIsDeleteUserModalOpen(true);
+                  }}
                 >
                   Delete User
                 </button>
@@ -795,6 +800,15 @@ const UserManagement = () => {
           onClose={() => setIsEditUserOpen(false)}
           onSubmit={handleUpdateUser}
           user={selectedUser}
+        />
+      )}
+
+      {/* delete user */}
+      {isDeleteUserModalOpen && selectedUser && (
+        <DeleteUserModalConfirm
+          userId={selectedUser._id}
+          onCancel={() => setIsDeleteUserModalOpen(false)}
+          onConfirm={handleDeleteUser}
         />
       )}
     </AdminDashboardLayout>
