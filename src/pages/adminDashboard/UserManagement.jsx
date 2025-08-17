@@ -425,7 +425,7 @@ const UserManagement = () => {
 
   const handleDeleteUser = async (userId) => {
     try {
-      await axios.delete(
+      const res = await axios.delete(
         `${
           import.meta.env.VITE_SERVER_DOMAIN
         }/api/v1/user/delete-user/${userId}`,
@@ -435,13 +435,16 @@ const UserManagement = () => {
           },
         }
       );
-      toast.success("User deleted successfully");
+      toast.success(res?.data?.message || "User deleted successfully");
       fetchUsers();
       setIsUserModalOpen(false);
       setSelectedUser(null);
     } catch (error) {
       console.log(error);
-      toast.error("Failed to delete user");
+      const backendMessage =
+        error.response?.data?.message || "Failed to delete user";
+
+      toast.error(backendMessage);
     }
   };
   return (
