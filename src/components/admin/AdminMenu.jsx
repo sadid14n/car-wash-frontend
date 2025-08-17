@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import Logo from "../../assets/logo.jpg";
+import React, { useState, useContext } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { UserContext } from "../../App";
+
+
+import Logo from "../../assets/logo.png";
 import {
   X,
   Menu,
@@ -52,33 +55,30 @@ const AdminMenu = () => {
     return location.pathname == path;
   };
 
+    const { userAuth, setUserAuth } = useContext(UserContext);
+      const navigate = useNavigate();
+      const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  const handleLogout = () => {
+    setUserAuth(null);
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <>
-      {/* Mobile Menu Toggle */}
-      <div className="lg:hidden mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-800">Admin Dashboard</h2>
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 rounded-md bg-gray-100 hover:bg-gray-200"
-        >
-          {isMobileMenuOpen ? (
-            <X className="w-6 h-6 text-gray-700" />
-          ) : (
-            <Menu className="w-6 h-6 text-gray-700" />
-          )}
-        </button>
-      </div>
-
       <div
-        className={`${
-          isMobileMenuOpen ? "block" : "hidden"
-        } lg:block bg-gray-100 rounded-lg shadow-md overflow-hidden mb-6`}
+        className="bg-gray-100 rounded-lg shadow-md h-fit"
       >
-        <div className="hidden lg:block p-6">
-          <img src={Logo} alt="" />
+        <div className="p-2 flex justify-center">
+          <img src={Logo} alt="" className="h-20 w-auto" />
         </div>
 
-        <p className="text-gray-400 pl-8 text-sm">MENU</p>
+        {/* <p className="text-gray-400 pl-8 text-sm">MENU</p> */}
         <nav className="p-4">
           <ul className="space-y-2">
             {MenuItem.map((item) => (
@@ -145,35 +145,30 @@ const AdminMenu = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex flex-col">
-        {/* logo */}
-        {/* <div className="pt-3 px-2 h-[80px]">
-          <img src={Logo} alt="" className="w-full h-full object-contain" />
-        </div> */}
-
-        {/* <div className="pl-5 pt-14">
-          <p className="text-[12px] text-gray-500">MENU</p>
-
-          <div className="flex flex-col gap-2">
-            {MenuItem.map((item, index) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <Link
-                  key={index}
-                  to={item.path}
-                  className={`flex gap-3 items-center transition-all duration-150 
-                  ${isActive ? "text-black font-semibold" : "text-gray-500"}`}
-                >
-                  <i className={item.logo} font-medium></i>
-                  <p className="text-md pb-1">{item.name}</p>
-                </Link>
-              );
-            })}
+        <div className="w-full">
+          {/* Login/Logout button */}
+          <div className="w-full">
+            {userAuth?.isLoggedIn ? (
+              <button
+                onClick={handleLogout}
+                className="w-full px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="ml-4 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Login
+              </Link>
+            )}
           </div>
-        </div> */}
+        </div>
       </div>
+
+      
     </>
   );
 };

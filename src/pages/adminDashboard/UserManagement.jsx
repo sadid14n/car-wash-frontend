@@ -460,7 +460,7 @@ const UserManagement = () => {
             type="text"
             name=""
             className=" ml-8 py-2 placeholder:text-sm text-md absolute w-[85%] outline-none"
-            placeholder="Search task"
+            placeholder="Search users"
             value={searchTerm}
             onChange={handleSearchChange}
           />
@@ -549,138 +549,143 @@ const UserManagement = () => {
           </div>
 
           {/* Card */}
-          <div className="flex flex-wrap gap-10 mt-6">
-            {/* first card */}
-            <div className="flex flex-col bg-white rounded-md w-[250px] p-4 pt-2">
-              <div className="flex justify-between text-sm">
-                {/* name and button */}
-                <div className="">
-                  <p className="">Name</p>
-                  <p className="font-semibold">{selectedUser.name}</p>
+          <div className="flex flex-col gap-10 mt-6">
+            <div className="flex gap-10">
+              {/* first card */}
+              <div className="flex flex-col bg-white rounded-md w-1/2 p-4 pt-2 shadow-gray-800 shadow-2xl">
+                <div className="flex gap-10">
+                  <div className="flex flex-col">
+                    {/* name and button */}
+                    <div className="text-sm">
+                      <p className="">Name</p>
+                      <p className="font-semibold">{selectedUser.name}</p>
+                    </div>
+                    {/* Phone number */}
+                    <div className="text-sm mt-4">
+                      <p>Phone Number</p>
+                      <p className="font-semibold">{selectedUser.phone}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    {/* Member since */}
+                    <div className="text-sm">
+                      <p>Member Since</p>
+                      <p className="font-semibold">
+                        {new Date(selectedUser.joinedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+
+                    {/* Address */}
+                    <div className="text-sm mt-4">
+                      <p>Address</p>
+                      <p className="font-semibold">{selectedUser.address}</p>
+                    </div>
+                  </div>
                 </div>
-                {/* edit button */}
-                <div className="flex items-center text-white font-normal text-[11px]">
+
+                <div className="flex mt-10">
+                  {/* edit button */}
+                  <div className="flex items-center text-white font-normal text-[11px]">
+                      <button
+                        className="bg-orange-400 text-sm border-2 px-3 py-1 rounded-lg"
+                        onClick={() => handleOpenEditUser(selectedUser)}
+                      >
+                        Edit
+                      </button>
+                    </div>
                   <button
-                    className="bg-orange-400 px-2 rounded-l-md"
-                    onClick={() => handleOpenEditUser(selectedUser)}
+                    className="text-sm border-2 px-3 py-1 rounded-lg bg-red-500 text-white cursor-pointer"
+                    onClick={() => {
+                      setIsDeleteUserModalOpen(true);
+                    }}
                   >
-                    Edit
+                    Delete User
                   </button>
-                  <PencilLine className="w-4 h-4 bg-orange-400 pr-2 rounded-r-md" />
                 </div>
               </div>
 
-              {/* Phone number */}
-              <div className="text-sm mt-4">
-                <p>Phone Number</p>
-                <p className="font-semibold">{selectedUser.phone}</p>
-              </div>
+              {/* second card */}
+              <div className="flex flex-col bg-white rounded-md w-1/2 p-4 pl-6 pt-2  shadow-gray-800 shadow-2xl">
+                <div className="text-sm font-semibold">
+                  <p>Wash Statistics</p>
+                </div>
+                {/* Total Wash */}
+                <div className="text-sm mt-4">
+                  <p>Total Wash</p>
+                  <p className="font-bold">
+                    {selectedUser.account_info.total_wash}
+                  </p>
+                </div>
 
-              {/* Member since */}
-              <div className="text-sm mt-4">
-                <p>Member Since</p>
-                <p className="font-semibold">
-                  {new Date(selectedUser.joinedAt).toLocaleDateString()}
-                </p>
-              </div>
+                {/* Current Perks */}
+                <div className="text-sm mt-4">
+                  <p>Current Perks</p>
+                  <p>
+                    <span className="font-bold">
+                      {selectedUser.account_info.perks}
+                    </span>
+                    /7
+                  </p>
+                </div>
 
-              {/* Address */}
-              <div className="text-sm mt-4">
-                <p>Address</p>
-                <p className="font-semibold">{selectedUser.address}</p>
-              </div>
-
-              <div className="mt-4">
-                <button
-                  className="text-sm border-2 px-3 py-1 rounded-lg bg-red-500 text-white cursor-pointer"
-                  onClick={() => {
-                    setIsDeleteUserModalOpen(true);
-                  }}
-                >
-                  Delete User
-                </button>
-              </div>
-            </div>
-
-            {/* second card */}
-            <div className="flex flex-col bg-white rounded-md w-[250px] p-4 pl-6 pt-2">
-              <div className="text-sm font-semibold">
-                <p>Wash Statistics</p>
-              </div>
-              {/* Total Wash */}
-              <div className="text-sm mt-4">
-                <p>Total Wash</p>
-                <p className="font-bold">
-                  {selectedUser.account_info.total_wash}
-                </p>
-              </div>
-
-              {/* Current Perks */}
-              <div className="text-sm mt-4">
-                <p>Current Perks</p>
-                <p>
-                  <span className="font-bold">
-                    {selectedUser.account_info.perks}
-                  </span>
-                  /7
-                </p>
-              </div>
-
-              {/* Wash Progress */}
-              <div className="text-sm mt-4">
-                <p>Wash progress</p>
+                {/* Wash Progress */}
+                <div className="text-sm mt-4">
+                  <p>Wash progress</p>
+                </div>
               </div>
             </div>
 
             {/* third card */}
-            <div className="flex flex-col bg-white rounded-md w-[250px] p-4 pl-6 pt-2">
-              {/* Edit button */}
-              <div className="flex justify-end">
-                <div className="flex items-center text-white font-normal text-[11px]">
-                  <button
-                    className="bg-orange-400 px-2 rounded-l-md"
-                    onClick={openEditVehiclePopup}
-                  >
-                    Edit
-                  </button>
-                  <PencilLine className="w-4 h-4 bg-orange-400 pr-2 rounded-r-md" />
-                </div>
-              </div>
-
-              {/* Vehical column */}
-              <div className="flex gap-5 overflow-x-auto  text-sm">
-                {/* vehical 1 */}
-                {selectedUser.vehicle.map((vehical, i) => (
-                  <div key={vehical._id}>
-                    {/* vehical num */}
-                    <div>
-                      <p className="font-medium">Vehical {i + 1}</p>
-                      <p className="font-bold">{vehical.vehicle_type}</p>
-                    </div>
-
-                    {/* vehical name */}
-                    <div className="mt-4">
-                      <p className="font-medium">Vehical Name</p>
-                      <p className="font-bold">{vehical.vehicle_name}</p>
-                    </div>
-
-                    {/* Vehical number */}
-                    <div className="mt-4">
-                      <p className="font-medium">Number</p>
-                      <p className="font-bold">{vehical.vehicle_number}</p>
-                    </div>
+            <div className="bg-gray-300 rounded-md w-full shadow-gray-800 shadow-2xl gap-2 p-4 pl-6 pt-2">
+              <h1 className="text-xl text-black font-semibold">Vehicles</h1>
+              <div className="flex flex-col">
+                {/* Edit button */}
+                <div className="flex justify-end">
+                  <div className="flex items-center text-white font-normal text-[11px]">
+                    <button
+                      className="bg-orange-400 text-sm px-3 py-1 rounded-lg"
+                      onClick={openEditVehiclePopup}
+                    >
+                      Edit
+                    </button>
                   </div>
-                ))}
-              </div>
+                </div>
 
-              {/* Add vehical button */}
-              <div className="flex justify-end mt-6">
-                <button
-                  className="text-[11px] bg-green-700 text-white py-1 px-2 rounded-md cursor-pointer"
-                  onClick={openAddVehiclePopup}
-                >
-                  Add Vehicle
-                </button>
+                {/* Vehical column */}
+                <div className="flex gap-5 text-sm">
+                  {/* vehical 1 */}
+                  {selectedUser.vehicle.map((vehical, i) => (
+                    <div key={vehical._id} className="bg-gray-700 p-2 rounded-md text-white">
+                      {/* vehical num */}
+                      <div>
+                        <p className="font-medium underline">Vehical {i + 1}</p>
+                        <p className="font-bold">{vehical.vehicle_type}</p>
+                      </div>
+
+                      {/* vehical name */}
+                      <div className="mt-4">
+                        <p className="font-medium">Vehical Name</p>
+                        <p className="font-bold">{vehical.vehicle_name}</p>
+                      </div>
+
+                      {/* Vehical number */}
+                      <div className="mt-4">
+                        <p className="font-medium">Number</p>
+                        <p className="font-bold">{vehical.vehicle_number}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Add vehical button */}
+                <div className="flex justify-end">
+                  <button
+                    className="text-[11px] bg-green-700 text-white text-sm px-3 py-1 rounded-lg cursor-pointer"
+                    onClick={openAddVehiclePopup}
+                  >
+                    Add Vehicle
+                  </button>
+                </div>
               </div>
             </div>
           </div>

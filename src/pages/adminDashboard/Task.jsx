@@ -124,28 +124,7 @@ const Task = () => {
 
   return (
     <AdminDashboardLayout>
-      {/* Search Bar */}
-      {/* Search Bar */}
       <div className="flex justify-between items-center">
-        <div className="flex relative items-center p-4 bg-white rounded-full w-[80%] h-12">
-          <span className="absolute left-3  z-10">
-            <Search className="w-5 h-5 " />
-          </span>
-          <input
-            type="text"
-            name=""
-            className=" ml-8 py-2 placeholder:text-sm text-md absolute w-[85%] outline-none"
-            placeholder="Search task"
-            // value={searchTerm}
-            // onChange={handleSearchChange}
-          />
-          {/* {searchTerm && (
-            <span className="absolute right-3 cursor-pointer">
-              <X className="w-5 h-5" onClick={() => setSearchTerm("")} />
-            </span>
-          )} */}
-        </div>
-
         <p className="text-gray-400">Total User: </p>
       </div>
 

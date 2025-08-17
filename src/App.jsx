@@ -46,7 +46,7 @@ const App = () => {
 
   return (
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
-      <Navbar />
+      {/* <Navbar /> */}
 
       <Routes>
         <Route

@@ -187,21 +187,6 @@ const Dashboard = () => {
   return (
     <AdminDashboardLayout>
       <Toaster />
-      {/* Search Bar */}
-      <div className="flex relative items-center p-4 bg-white rounded-full w-84 h-12">
-        <span className="absolute left-3  z-10">
-          <Search className="w-5 h-5 " />
-        </span>
-        <input
-          type="text"
-          name=""
-          className=" ml-8 py-2 placeholder:text-sm text-sm absolute w-2/3 outline-none"
-          placeholder="Search task"
-        />
-        <span className="absolute left-70  flex items-center bg-gray-100 rounded-md px-2">
-          <Command className="w-5 h-5" size={48} /> F
-        </span>
-      </div>
 
       {/* Title */}
       <div className="flex max-sm:flex-col max-sm:gap-10 items-center justify-between mt-6">
