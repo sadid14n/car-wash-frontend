@@ -52,7 +52,9 @@ const App = () => {
         <Route
           path="/"
           element={
-            <h1 className="text-center text-2xl">Welcome to Car Wash</h1>
+            <RedirectIfAuthenticated>
+              <UserAuth />
+            </RedirectIfAuthenticated>
           }
         />
 
