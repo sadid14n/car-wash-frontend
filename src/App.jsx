@@ -47,10 +47,6 @@ const App = () => {
   return (
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
       {/* <Navbar /> */}
-      <RedirectIfAuthenticated>
-              <UserAuth />
-      </RedirectIfAuthenticated>
-
       <Routes>
         <Route
           path="/"
