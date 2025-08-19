@@ -21,6 +21,28 @@ const Calender = () => {
       });
   };
 
+
+  // ✅ Delete booking by ID
+  const deleteBooking = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this booking?")) return;
+
+    try {
+      const res = await fetch(
+        `https://car-wash-shared.onrender.com/api/bookings/${id}`,
+        { method: "DELETE" }
+      );
+
+      if (res.ok) {
+        // Remove from UI immediately
+        setBookings((prev) => prev.filter((b) => b._id !== id));
+      } else {
+        console.error("Failed to delete booking");
+      }
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+    }
+  };
+
   useEffect(() => {
     // Initial fetch
     fetchBookings();
@@ -86,6 +108,14 @@ const Calender = () => {
                       {b.consent ? "✔️" : "❌"}
                     </td>
                     <td className="p-3 border border-gray-700">{b.comments}</td>
+                    <td className="p-3 border border-gray-700 text-center">
+                      <button
+                        onClick={() => deleteBooking(b._id)}
+                        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                      >
+                        🗑 Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
