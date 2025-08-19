@@ -146,13 +146,13 @@ const AdminMenu = () => {
           </div>
         </div>
 
-        <div className="w-full">
+        
           {/* Login/Logout button */}
-          <div className="w-full">
+          <div className="w-full p-4">
             {userAuth?.isLoggedIn ? (
               <button
                 onClick={handleLogout}
-                className="w-full px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                className="w-full px-4 py-2 rounded-xl bg-white text-red-700 border border-red-700 hover:text-white transition hover:bg-red-700"
               >
                 Logout
               </button>
@@ -165,7 +165,7 @@ const AdminMenu = () => {
               </Link>
             )}
           </div>
-        </div>
+        
       </div>
 
       
