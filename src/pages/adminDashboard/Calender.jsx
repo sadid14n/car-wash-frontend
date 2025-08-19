@@ -6,8 +6,9 @@ const Calender = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // 👇 Replace with your actual deployed backend API URL
+  // ✅ Extracted fetch logic into a function so we can call it again on refresh
+  const fetchBookings = () => {
+    setLoading(true);
     fetch("https://car-wash-shared.onrender.com/api/bookings")
       .then((res) => res.json())
       .then((data) => {
@@ -18,12 +19,34 @@ const Calender = () => {
         console.error("Error fetching bookings:", err);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    // Initial fetch
+    fetchBookings();
+
+    // 🔄 Auto-refresh every 30 seconds
+    const interval = setInterval(() => {
+      fetchBookings();
+    }, 30000); // 30000ms = 30s
+
+    // Cleanup on unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <AdminDashboardLayout>
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Booking Calendar</h1>
+      <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold">Booking Calendar</h1>
+          <button
+            onClick={fetchBookings}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            🔄 Refresh
+          </button>
+        </div>
+        
 
         {loading ? (
           <p>Loading bookings...</p>
